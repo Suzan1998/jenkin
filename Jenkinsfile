@@ -24,8 +24,7 @@ pipeline {
 			echo"Iam Suzan"
 		}
 		success{
-			"Print when Success"
-
+			echo"Print when Success"
 		}
 		failure{
 			echo"Print when Fail"
