@@ -3,30 +3,41 @@ pipeline {
 
 	environment{
 		dockerHome = tool 'myDocker'
-		mavenHome = tool 'Maven2'
+		mavenHome = tool 'myMaven'
 		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH" 
 	}
 	stages{
-	stage('Build') {
-		steps{
-			sh 'mvn --version'
-			sh 'docker version'
-		echo "$PATH"
-		
-		}
-	}
-	stage('Test') {
-		steps{
-		echo "Test"
-		}
 	
-	}
 
 	stage('Integration Test') {
 		steps{
-		echo "Integration Test"
+		sh 'mvn failsafe:integration-test failsafe:verify'
 		}
 	}
+	
+	stage('package') {
+		steps{
+		sh 'mvn package -DskipTests'
+		}
+	}
+stage('build docker image'){
+  steps{
+	  script{
+		  dockerImage = docker.build("11524920/currency-exchange-devops:${env.BUILD_TAG}")
+	  }
+  }
+}
+
+stage('push docker image'){
+	steps{
+		script{
+			docker.withRegistry('', 'dockerhub')
+      dockerImage.push();
+	  dockerImage.push('latest');
+		}
+	}
+}
+
 	} 
 	post{
 		always{
