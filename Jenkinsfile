@@ -3,8 +3,8 @@ pipeline {
 	stages{
 	stage('Build') {
 		steps{
-		echo "$PATH"
-		echo "$BUILD_ID"
+		echo "$"
+		
 		}
 	}
 	stage('Test') {
